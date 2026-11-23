@@ -1,0 +1,325 @@
+
+using System;
+
+class Program
+{
+    // ==========================================
+    // PROJETO DE EXTENSÃO - ATENA TECH
+    // Sistema: SG - UNI
+    // Funcionalidade: Cadastro de alunos e matrículas
+    //
+    // Integrantes:
+    // AndreAy Rodrigues Campos - RA 2221100108
+    // Vitor Alves da Silva - RA 2225103471
+    // Saulo Alves Costa Souza - RA 2225202615
+    // Pedro Hugo Carvalho Rosa - RA 2225200774
+    // Elnatan Cainan de Jesus - RA 2225203024
+    // ==========================================
+
+    // Constantes que definem os limites de armazenamento
+    const int MAX_ALUNOS = 100;
+    const int MAX_MATRICULAS = 200;
+
+    // Vetores para armazenar os dados dos alunos
+    static string[] nomes = new string[MAX_ALUNOS];
+    static string[] cursos = new string[MAX_ALUNOS];
+
+    // Turmas disponíveis para matrícula
+    static string[] turmas = {
+        "GTI - 2A",
+        "ADS - 1A",
+        "Sistemas de Informação - 1A"
+    };
+
+    // Vetores para armazenar as matrículas
+    static int[] matriculaAluno = new int[MAX_MATRICULAS];
+    static string[] matriculaTurma = new string[MAX_MATRICULAS];
+
+    // Contadores de registros
+    static int totalAlunos = 0;
+    static int totalMatriculas = 0;
+
+    static void Main()
+    {
+        int opcao;
+
+        // Menu principal permanece ativo até o usuário sair
+        do
+        {
+            Console.Clear();
+
+            Console.WriteLine("=================================");
+            Console.WriteLine("          SG-UNI");
+            Console.WriteLine("     Sistema de Gestão Acadêmica");
+            Console.WriteLine("=================================");
+            Console.WriteLine("1 - Cadastrar aluno");
+            Console.WriteLine("2 - Listar alunos");
+            Console.WriteLine("3 - Consultar turmas");
+            Console.WriteLine("4 - Realizar matrícula");
+            Console.WriteLine("5 - Consultar matrículas");
+            Console.WriteLine("0 - Sair");
+            Console.WriteLine("=================================");
+            Console.Write("Escolha uma opção: ");
+
+            opcao = LerInteiro();
+
+            // Estrutura de decisão para selecionar a funcionalidade
+            switch (opcao)
+            {
+                case 1:
+                    CadastrarAluno();
+                    break;
+
+                case 2:
+                    ListarAlunos();
+                    break;
+
+                case 3:
+                    ConsultarTurmas();
+                    break;
+
+                case 4:
+                    RealizarMatricula();
+                    break;
+
+                case 5:
+                    ConsultarMatriculas();
+                    break;
+
+                case 0:
+                    Console.WriteLine("Sistema encerrado.");
+                    break;
+
+                default:
+                    Console.WriteLine("Opção inválida!");
+                    Pausar();
+                    break;
+            }
+
+        } while (opcao != 0);
+    }
+
+    // Método para ler números inteiros e evitar entradas inválidas
+    static int LerInteiro()
+    {
+        int valor;
+
+        while (!int.TryParse(Console.ReadLine(), out valor))
+        {
+            Console.Write("Digite um número válido: ");
+        }
+
+        return valor;
+    }
+
+    // Cadastro de alunos
+    static void CadastrarAluno()
+    {
+        Console.Clear();
+        Console.WriteLine("=== CADASTRO DE ALUNO ===");
+
+        if (totalAlunos >= MAX_ALUNOS)
+        {
+            Console.WriteLine("Limite de alunos atingido.");
+            Pausar();
+            return;
+        }
+
+        Console.Write("Nome do aluno: ");
+        string nome = Console.ReadLine() ?? "";
+
+        Console.Write("Curso: ");
+        string curso = Console.ReadLine() ?? "";
+
+        // Validação dos campos obrigatórios
+        if (string.IsNullOrWhiteSpace(nome) ||
+            string.IsNullOrWhiteSpace(curso))
+        {
+            Console.WriteLine("Preencha todos os campos.");
+        }
+        else
+        {
+            nomes[totalAlunos] = nome;
+            cursos[totalAlunos] = curso;
+
+            int codigo = totalAlunos + 1;
+            totalAlunos++;
+
+            Console.WriteLine("Aluno cadastrado com sucesso!");
+            Console.WriteLine("Código do aluno: " + codigo);
+        }
+
+        Pausar();
+    }
+
+    // Consulta dos alunos cadastrados
+    static void ListarAlunos()
+    {
+        Console.Clear();
+        Console.WriteLine("=== ALUNOS CADASTRADOS ===");
+
+        if (totalAlunos == 0)
+        {
+            Console.WriteLine("Nenhum aluno cadastrado.");
+        }
+        else
+        {
+            for (int i = 0; i < totalAlunos; i++)
+            {
+                Console.WriteLine(
+                    "Código: " + (i + 1) +
+                    " | Nome: " + nomes[i] +
+                    " | Curso: " + cursos[i]
+                );
+            }
+        }
+
+        Pausar();
+    }
+
+    // Consulta das turmas disponíveis
+    static void ConsultarTurmas()
+    {
+        Console.Clear();
+        Console.WriteLine("=== TURMAS DISPONÍVEIS ===");
+
+        for (int i = 0; i < turmas.Length; i++)
+        {
+            Console.WriteLine((i + 1) + " - " + turmas[i]);
+        }
+
+        Pausar();
+    }
+
+    // Registro de matrícula de um aluno em uma turma
+    static void RealizarMatricula()
+    {
+        Console.Clear();
+        Console.WriteLine("=== REALIZAR MATRÍCULA ===");
+
+        if (totalAlunos == 0)
+        {
+            Console.WriteLine("Cadastre um aluno antes de realizar a matrícula.");
+            Pausar();
+            return;
+        }
+
+        if (totalMatriculas >= MAX_MATRICULAS)
+        {
+            Console.WriteLine("Limite de matrículas atingido.");
+            Pausar();
+            return;
+        }
+
+        // Exibe os alunos cadastrados
+        Console.WriteLine("\nAlunos disponíveis:");
+
+        for (int i = 0; i < totalAlunos; i++)
+        {
+            Console.WriteLine((i + 1) + " - " + nomes[i]);
+        }
+
+        Console.Write("\nInforme o código do aluno: ");
+        int codigoAluno = LerInteiro();
+
+        // Verifica se o código informado é válido
+        if (codigoAluno < 1 || codigoAluno > totalAlunos)
+        {
+            Console.WriteLine("Aluno não encontrado.");
+            Pausar();
+            return;
+        }
+
+        // Exibe as turmas disponíveis
+        Console.WriteLine("\nTurmas disponíveis:");
+
+        for (int i = 0; i < turmas.Length; i++)
+        {
+            Console.WriteLine((i + 1) + " - " + turmas[i]);
+        }
+
+        Console.Write("\nSelecione a turma: ");
+        int opcaoTurma = LerInteiro();
+
+        if (opcaoTurma < 1 || opcaoTurma > turmas.Length)
+        {
+            Console.WriteLine("Turma não encontrada.");
+            Pausar();
+            return;
+        }
+
+        string turmaEscolhida = turmas[opcaoTurma - 1];
+
+        // Verifica se já existe matrícula para o mesmo aluno e turma
+        bool matriculaDuplicada = false;
+
+        for (int i = 0; i < totalMatriculas; i++)
+        {
+            if (matriculaAluno[i] == codigoAluno &&
+                matriculaTurma[i] == turmaEscolhida)
+            {
+                matriculaDuplicada = true;
+                break;
+            }
+        }
+
+        if (matriculaDuplicada)
+        {
+            Console.WriteLine("Este aluno já está matriculado nesta turma.");
+        }
+        else if (totalMatriculas < MAX_MATRICULAS)
+        {
+            // Armazena os dados da matrícula
+            matriculaAluno[totalMatriculas] = codigoAluno;
+            matriculaTurma[totalMatriculas] = turmaEscolhida;
+
+            totalMatriculas++;
+
+            Console.WriteLine("\nMatrícula realizada com sucesso!");
+            Console.WriteLine("Aluno: " + nomes[codigoAluno - 1]);
+            Console.WriteLine("Turma: " + turmaEscolhida);
+        }
+
+        Pausar();
+    }
+
+    // Consulta de todas as matrículas registradas
+    static void ConsultarMatriculas()
+    {
+        Console.Clear();
+        Console.WriteLine("=== MATRÍCULAS REGISTRADAS ===");
+
+        if (totalMatriculas == 0)
+        {
+            Console.WriteLine("Nenhuma matrícula registrada.");
+        }
+        else
+        {
+            for (int i = 0; i < totalMatriculas; i++)
+            {
+                int codigo = matriculaAluno[i];
+
+                Console.WriteLine(
+                    "Aluno: " + nomes[codigo - 1] +
+                    " | Turma: " + matriculaTurma[i]
+                );
+            }
+        }
+
+        Console.WriteLine(
+            "\nVagas de armazenamento restantes: " +
+            (MAX_MATRICULAS - totalMatriculas)
+        );
+
+        Pausar();
+    }
+
+    // Aguarda o usuário pressionar Enter
+    static void Pausar()
+    {
+        Console.WriteLine("\nPressione ENTER para continuar...");
+        Console.ReadLine();
+    }
+}
+
+
